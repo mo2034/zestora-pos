@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Zestora — Smart POS System</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;900&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="auth.css" />
+  <!-- Firebase SDK (v9 compat) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+</head>
+<body>
+
+<!-- AUTH SECTION -->
+<div id="auth-container">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <span class="logo-icon">Z</span>
+      <span class="logo-text">Zestora</span>
+    </div>
+    <h2 id="auth-title">Welcome Back</h2>
+    <p id="auth-subtitle">Please enter your details to sign in.</p>
+    
+    <div id="auth-form-ui">
+      <div class="form-group">
+        <label for="auth-email">Email Address</label>
+        <input type="email" id="auth-email" placeholder="name@company.com" required>
+      </div>
+      <div class="form-group">
+        <label for="auth-password">Password</label>
+        <input type="password" id="auth-password" placeholder="••••••••" required>
+      </div>
+      <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+        <button onclick="login()" class="btn-primary" style="flex: 1;">Login</button>
+        <button onclick="signUp()" class="btn-outline" style="flex: 1; padding: 0.85rem; border-radius: var(--radius-sm);">Sign Up</button>
+      </div>
+    </div>
+    
+    <div id="auth-error" class="auth-error" style="margin-top: 1.5rem; color: #ff5252; font-size: 13px; text-align: center;"></div>
+  </div>
+</div>
+
+<div id="main-content" style="display: none;">
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="#" class="logo">
+        <span class="logo-icon">Z</span>
+        <span class="logo-text">Zestora</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#dashboard">Dashboard</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button onclick="logout()" class="btn-ghost" style="color: var(--primary); font-weight: 700;">Logout</button>
+        <a href="#" class="btn-nav">Get Started</a>
+        <button class="menu-toggle" aria-label="Toggle Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="grid-overlay"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        Smart Restaurant POS
+      </div>
+      <h1 class="hero-title">
+        The POS that<br>
+        <em>thinks ahead</em>
+      </h1>
+      <p class="hero-subtitle">
+        Zestora unifies your kitchen, cashier, and analytics into one elegant system. 
+        From order to insight — in real time.
+      </p>
+      <div class="hero-cta">
+        <a href="#" class="btn-primary">Start Free Trial</a>
+        <a href="#dashboard" class="btn-ghost">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+          See it live
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-num">2.4K+</span>
+          <span class="stat-label">Restaurants</span>
+        </div>
+        <div class="stat-div"></div>
+        <div class="stat">
+          <span class="stat-num">98.7%</span>
+          <span class="stat-label">Uptime</span>
+        </div>
+        <div class="stat-div"></div>
+        <div class="stat">
+          <span class="stat-num">4.9★</span>
+          <span class="stat-label">Rating</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="screen-mockup">
+        <div class="screen-bar">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="screen-content">
+          <div class="mock-kpis">
+            <div class="mock-kpi red">
+              <div class="kpi-icon">💰</div>
+              <div>
+                <div class="kpi-val">$12,480</div>
+                <div class="kpi-lbl">Today's Sales</div>
+              </div>
+            </div>
+            <div class="mock-kpi blue">
+              <div class="kpi-icon">🛒</div>
+              <div>
+                <div class="kpi-val">284</div>
+                <div class="kpi-lbl">Total Orders</div>
+              </div>
+            </div>
+            <div class="mock-kpi teal">
+              <div class="kpi-icon">👥</div>
+              <div>
+                <div class="kpi-val">47</div>
+                <div class="kpi-lbl">New Customers</div>
+              </div>
+            </div>
+          </div>
+          <div class="mock-chart">
+            <div class="chart-title">Sales — Last 30 Days</div>
+            <div class="chart-bars">
+              <div class="bar" style="height:40%"></div>
+              <div class="bar" style="height:60%"></div>
+              <div class="bar" style="height:45%"></div>
+              <div class="bar" style="height:75%"></div>
+              <div class="bar" style="height:55%"></div>
+              <div class="bar" style="height:80%"></div>
+              <div class="bar" style="height:70%"></div>
+              <div class="bar active" style="height:95%"></div>
+              <div class="bar" style="height:65%"></div>
+              <div class="bar" style="height:85%"></div>
+              <div class="bar" style="height:72%"></div>
+              <div class="bar" style="height:90%"></div>
+            </div>
+          </div>
+          <div class="mock-orders">
+            <div class="order-row"><span>#ORD-2841</span><span class="badge-status green">Ready</span><span>$42.50</span></div>
+            <div class="order-row"><span>#ORD-2840</span><span class="badge-status orange">Preparing</span><span>$28.00</span></div>
+            <div class="order-row"><span>#ORD-2839</span><span class="badge-status blue">Pending</span><span>$65.75</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="float-card float-1">
+        <div class="float-icon">⚡</div>
+        <div>
+          <div class="float-title">Order sent</div>
+          <div class="float-sub">Kitchen notified instantly</div>
+        </div>
+      </div>
+      <div class="float-card float-2">
+        <div class="float-icon">📊</div>
+        <div>
+          <div class="float-title">Revenue +18%</div>
+          <div class="float-sub">vs last month</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <div class="section-label">What We Do</div>
+    <h2 class="section-title">Everything you need,<br>nothing you don't</h2>
+
+    <div class="features-grid">
+      <div class="feature-card feat-lg">
+        <div class="feat-icon">🖥️</div>
+        <h3>POS Terminal</h3>
+        <p>Lightning-fast checkout with split-payment, modifiers, and real-time kitchen sync. Works offline.</p>
+        <div class="feat-tag">Core</div>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon">👨‍🍳</div>
+        <h3>Kitchen Display</h3>
+        <p>Orders flow directly to the kitchen screen. Prioritize, track, and complete tickets with one tap.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon">📦</div>
+        <h3>Inventory</h3>
+        <p>Track ingredients, auto-deduct from recipes, and get alerts before you run out.</p>
+      </div>
+      <div class="feature-card feat-wide">
+        <div class="feat-icon">📈</div>
+        <h3>Smart Analytics</h3>
+        <p>Beautiful charts for sales, top products, branch comparisons, and staff performance — all in one dashboard.</p>
+        <div class="feat-chart-preview">
+          <svg viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <polyline points="0,50 20,40 40,45 60,20 80,30 100,15 120,25 140,10 160,18 180,8 200,12" stroke="#b7131a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <polygon points="0,50 20,40 40,45 60,20 80,30 100,15 120,25 140,10 160,18 180,8 200,12 200,60 0,60" fill="url(#grad)" opacity="0.3"/>
+            <defs>
+              <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#b7131a"/>
+                <stop offset="100%" stop-color="#b7131a" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon">🎁</div>
+        <h3>Loyalty & Gift Cards</h3>
+        <p>Reward your regulars with points, redeem gift cards, and watch retention soar.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feat-icon">🌐</div>
+        <h3>Multi-Language</h3>
+        <p>Full Arabic & English support with RTL layout. Built for the MENA market.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DASHBOARD PREVIEW -->
+  <section class="dashboard-preview" id="dashboard">
+    <div class="preview-left">
+      <div class="section-label">Live Demo</div>
+      <h2 class="section-title-sm">A dashboard that<br>tells the story</h2>
+      <p class="preview-desc">
+        Every metric that matters — from daily revenue to kitchen speed — visualized the moment it happens.
+      </p>
+      <ul class="preview-list">
+        <li><span class="check">✓</span> Real-time order tracking</li>
+        <li><span class="check">✓</span> Branch-by-branch comparison</li>
+        <li><span class="check">✓</span> Customizable KPI cards</li>
+        <li><span class="check">✓</span> Export to PDF & Excel</li>
+      </ul>
+      <a href="#" class="btn-primary" style="margin-top:2rem;display:inline-block;">Try the Demo</a>
+    </div>
+    <div class="preview-right">
+      <div class="big-screen">
+        <div class="big-screen-bar"><span></span><span></span><span></span></div>
+        <div class="big-screen-body">
+          <div class="bs-sidebar">
+            <div class="bs-logo">Z</div>
+            <div class="bs-nav-item active">📊</div>
+            <div class="bs-nav-item">🖥️</div>
+            <div class="bs-nav-item">📦</div>
+            <div class="bs-nav-item">👥</div>
+            <div class="bs-nav-item">⚙️</div>
+          </div>
+          <div class="bs-main">
+            <div class="bs-header">
+              <div class="bs-title">Dashboard</div>
+              <div class="bs-controls"><span></span><span></span></div>
+            </div>
+            <div class="bs-kpis">
+              <div class="bs-kpi"><div class="bk-val">$12.4K</div><div class="bk-lbl">Sales</div></div>
+              <div class="bs-kpi"><div class="bk-val">284</div><div class="bk-lbl">Orders</div></div>
+              <div class="bs-kpi"><div class="bk-val">47</div><div class="bk-lbl">Customers</div></div>
+              <div class="bs-kpi"><div class="bk-val">$89K</div><div class="bk-lbl">Revenue</div></div>
+            </div>
+            <div class="bs-charts">
+              <div class="bs-chart-main">
+                <div class="bsc-title">30-Day Sales</div>
+                <div class="bsc-area">
+                  <svg viewBox="0 0 280 80" fill="none">
+                    <polyline points="0,70 25,58 50,62 75,35 100,45 125,20 150,32 175,12 200,22 225,10 250,18 280,8" stroke="#b7131a" stroke-width="2" stroke-linecap="round"/>
+                    <polygon points="0,70 25,58 50,62 75,35 100,45 125,20 150,32 175,12 200,22 225,10 250,18 280,8 280,80 0,80" fill="#b7131a" opacity="0.12"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="bs-chart-side">
+                <div class="bsc-title">By Branch</div>
+                <div class="bs-bars">
+                  <div class="bs-bar-row"><span>Main</span><div class="bs-bar" style="width:85%"></div></div>
+                  <div class="bs-bar-row"><span>Mall</span><div class="bs-bar" style="width:62%"></div></div>
+                  <div class="bs-bar-row"><span>Drive</span><div class="bs-bar" style="width:40%"></div></div>
+                </div>
+              </div>
+            </div>
+            <div class="bs-table">
+              <div class="bt-row bt-head"><span>Order</span><span>Status</span><span>Amount</span></div>
+              <div class="bt-row"><span>#2841</span><span class="bt-badge green">Ready</span><span>$42</span></div>
+              <div class="bt-row"><span>#2840</span><span class="bt-badge orange">Prep</span><span>$28</span></div>
+              <div class="bt-row"><span>#2839</span><span class="bt-badge blue">New</span><span>$65</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="pricing" id="pricing">
+    <div class="section-label">Pricing</div>
+    <h2 class="section-title">Simple, transparent pricing</h2>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-tier">Starter</div>
+        <div class="price-amount"><sup>$</sup>49<sub>/mo</sub></div>
+        <p class="price-desc">Perfect for a single location</p>
+        <ul class="price-features">
+          <li>1 POS terminal</li>
+          <li>Kitchen display</li>
+          <li>Basic analytics</li>
+          <li>Email support</li>
+        </ul>
+        <a href="#" class="btn-outline">Choose Starter</a>
+      </div>
+      <div class="price-card featured">
+        <div class="price-badge">Most Popular</div>
+        <div class="price-tier">Pro</div>
+        <div class="price-amount"><sup>$</sup>129<sub>/mo</sub></div>
+        <p class="price-desc">For growing restaurant chains</p>
+        <ul class="price-features">
+          <li>Up to 5 terminals</li>
+          <li>Full inventory system</li>
+          <li>Advanced analytics</li>
+          <li>Loyalty & gift cards</li>
+          <li>Priority support</li>
+        </ul>
+        <a href="#" class="btn-primary">Choose Pro</a>
+      </div>
+      <div class="price-card">
+        <div class="price-tier">Enterprise</div>
+        <div class="price-amount">Custom</div>
+        <p class="price-desc">Unlimited branches, custom needs</p>
+        <ul class="price-features">
+          <li>Unlimited terminals</li>
+          <li>Multi-branch reports</li>
+          <li>API access</li>
+          <li>Dedicated account manager</li>
+        </ul>
+        <a href="#" class="btn-outline">Contact Sales</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="logo-icon">Z</span>
+        <span class="logo-text">Zestora</span>
+        <p>Smart POS for modern restaurants.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Product</h4>
+        <a href="#">Features</a>
+        <a href="#">Pricing</a>
+        <a href="#">Changelog</a>
+      </div>
+      <div class="footer-links">
+        <h4>Company</h4>
+        <a href="#">About</a>
+        <a href="#">Blog</a>
+        <a href="#">Careers</a>
+      </div>
+      <div class="footer-links">
+        <h4>Support</h4>
+        <a href="#">Docs</a>
+        <a href="#">Contact</a>
+        <a href="#">Status</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Zestora. All rights reserved.</p>
+    </div>
+  </footer>
+</div>
+
+<button class="scroll-top" aria-label="Scroll to Top">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+</button>
+
+<script src="auth.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
